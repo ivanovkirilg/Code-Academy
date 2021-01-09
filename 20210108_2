@@ -1,0 +1,23 @@
+245(10) -> x(8)
+245/8 = 30 , remainder 5
+30/8 = 3   , remainder 6
+3/8 = 0    , remainder 3
+245(10) = 365(8)
+
+64(10) -> x(8)
+64/8 = 8 , remainder 0
+8/8 = 1  , remainder 0
+1/8 = 0  , remainder 1
+64(10) = 100(8)
+
+128(10) -> x(8)
+128/8 = 16 , remainder 0
+16/8 = 2   , remainder 0
+2/8 = 0    , remainder 2
+128(10) = 200(8)
+
+166(10) -> x(8)
+166/8 = 20 , remainder 6
+20/8 = 2   , remainder 4
+2/8 = 0    , remainder 2
+166(10) = 246(8)
