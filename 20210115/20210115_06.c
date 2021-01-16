@@ -8,7 +8,7 @@ int main(void) {
     int customValue = 0xAAAAAAAA; // 4 поредни байта със стойност 0xAA
     printf("Hex value: 0x%X\n", customValue);
 
-    printf("As float: %.45f\n With cast: %f\n", * (float *) &customValue, (float) customValue); // Bad idea
+    printf("As float: %.30f\n With cast: %f\n", * (float *) &customValue, (float) customValue); // Bad idea
     printf("As signed int: %d\n With cast: %d\n", * (signed int *) &customValue /* < still bad idea */, (signed int) customValue);
     printf("As unsigned int: %u\n With cast: %u\n", * (unsigned int *) &customValue, (unsigned int) customValue);
 

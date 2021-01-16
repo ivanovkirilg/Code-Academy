@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 int main() {
-    char greeting[] = "duma";
+    char greeting[] = "hello world";
 
     int i=0;
     for ( ; greeting[i]!='\0'; i++);
