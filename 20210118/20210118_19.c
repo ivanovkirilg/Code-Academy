@@ -11,22 +11,22 @@ int main() {
     int A = 0;
     int B = 0;
     if ( ! ( A && B ) == ! A || ! B ) printf("T1 proven for A=0 B=0\n"); 
-    if ( ! ( A || B ) == ! A && ! B ) printf("T2 proven for A=0 B=0\n");
+    if ( ! ( A || B ) == (!A && ! B) ) printf("T2 proven for A=0 B=0\n");
 
     A = 1;
     B = 0;
     if ( ! ( A && B ) == ! A || ! B ) printf("T1 proven for A=1 B=0\n"); 
-    if ( ! ( A || B ) == ! A && ! B ) printf("T2 proven for A=1 B=0\n");
+    if ( ! ( A || B ) == (!A && ! B) ) printf("T2 proven for A=1 B=0\n");
     
     A = 0;
     B = 1;
     if ( ! ( A && B ) == ! A || ! B ) printf("T1 proven for A=0 B=1\n"); 
-    if ( ! ( A || B ) == ! A && ! B ) printf("T2 proven for A=0 B=1\n");
+    if ( ! ( A || B ) == (!A && ! B) ) printf("T2 proven for A=0 B=1\n");
     
     A = 1;
     B = 1;
     if ( ! ( A && B ) == ! A || ! B ) printf("T1 proven for A=1 B=1\n"); 
-    if ( ! ( A || B ) == ! A && ! B ) printf("T2 proven for A=1 B=1\n");
+    if ( ! ( A || B ) == (!A && ! B) ) printf("T2 proven for A=1 B=1\n");
     
     return 0;
 }
