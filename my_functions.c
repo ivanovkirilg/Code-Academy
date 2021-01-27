@@ -18,3 +18,18 @@ int findMSB(int iNumber) {
     }
     return index;
 }
+
+int stringLength(char *p_string) {
+    int i = 0;
+    for ( ; p_string[i]!='\0'; i++);
+    return i;
+}
+
+/* DEPENDENT ON ^ stringLength() */
+void reverseString(char *p_string) {
+    for (int i=0, j=stringLength(p_string)-1; i < j; i++, j-- ) {
+        char temp = p_string[i];
+        p_string[i] = p_string[j];
+        p_string[j] = temp;
+    }
+}
