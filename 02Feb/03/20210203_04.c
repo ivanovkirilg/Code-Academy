@@ -32,7 +32,7 @@ int binSearch(int a[], int l, int d) {
 
 int main() {
     int iArray[] = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18};
-    int pos = binSearch(iArray, sizeof(iArray)/sizeof(int), 6);
+    int pos = binSearch(iArray, sizeof(iArray)/sizeof(int), 18);
     printf("%d", pos);
 
     return 0;
