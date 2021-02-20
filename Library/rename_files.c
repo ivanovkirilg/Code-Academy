@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     DIR *dir = opendir(path);
     struct dirent *entity;
 
-    if (argv[2] == NULL) {
+    if (argc != 3) {
         printf("%s [add/del] [prefix]", argv[0]);
         exit(1);
     }
@@ -41,7 +41,6 @@ int main(int argc, char *argv[]) {
             skip: ;
         }
     } else {
-        printf("Fine so far");
         printf("%s [add/del] [prefix]", argv[0]);
     }
 
