@@ -14,9 +14,9 @@
 #define ROWS 3
 #define COLUMNS 8
 char board[ROWS][COLUMNS] = {
-   { 0,  0,  0,  0,  0,  0,  0,  0},
-   { 9, 10, 11, 12, 13, 14, 15, 16},
-   { 1,  2,  3,  4,  5,  6,  7,  8}
+   { 0,  0,  0,  0,  0,  0,  0,  0 },
+   { 9, 10, 11, 12, 13, 14, 15, 16 },
+   { 1,  2,  3,  4,  5,  6,  7,  8 }
 };
 // char board[ROWS][COLUMNS] = {
 //    { 0,  0,  0,  0,  0,  0,  0,  0},
@@ -60,25 +60,31 @@ int main() {
 coords choosePiece(void) {
    coords chosen = { 0, 0 };
    while(1) {
-      printf("Enter coordinates of piece to move (x y): ");
+      printf("Enter coordinates of a piece (x y), 0 0 to rewind or 9 9 to quit: ");
       fflush(stdin);
       scanf("%d %d", &(chosen.x), &(chosen.y));
-      if (chosen.x > COLUMNS || chosen.y > ROWS || chosen.x < 1 || chosen.y < 1) {
+/* MISSING */
+      if (chosen.x == 0 && chosen.y == 0) {
+         printf("NEED TO IMPLEMENT REWIND.\n");
+      } else if (chosen.x == 9 && chosen.y == 9) {
+         printf("NEED TO IMPLEMENT QUITTING.\n");
+/* FEATURES */
+      } else if (chosen.x > COLUMNS || chosen.y > ROWS || chosen.x < 1 || chosen.y < 1) {
          printf("Invalid coordinates.\n");
       } else if (board[chosen.y-1][chosen.x-1] == 0) {
          printf("No piece is present there.\n");
       } else {
 			validMoves = 0;
-			if (chosen.y > 2 && ABOVE(chosen) != 0 && TWOABOVE(chosen) == 0) {
+			if (chosen.y > 2 && ABOVE(chosen) > 1 && TWOABOVE(chosen) == 0) {
 				validMoves |= UPBIT;
 			}
-			if (chosen.y < ROWS - 1 && BELOW(chosen) != 0 && TWOBELOW(chosen) == 0) {
+			if (chosen.y < ROWS - 1 && BELOW(chosen) > 1 && TWOBELOW(chosen) == 0) {
 				validMoves |= DOWNBIT;
 			}
-			if (chosen.x > 2 && LEFTOF(chosen) != 0 && TWOLEFTOF(chosen) == 0) {
+			if (chosen.x > 2 && LEFTOF(chosen) > 1 && TWOLEFTOF(chosen) == 0) {
 				validMoves |= LEFTBIT;
 			}
-			if (chosen.x < COLUMNS - 1 && RIGHTOF(chosen) != 0 && TWORIGHTOF(chosen) == 0) {
+			if (chosen.x < COLUMNS - 1 && RIGHTOF(chosen) > 1 && TWORIGHTOF(chosen) == 0) {
 				validMoves |= RIGHTBIT;
 			}
          if (validMoves) {
@@ -104,7 +110,7 @@ void chooseMove(coords piece) {
    char input = 0;
    while (input == 0) {
       printf("Select the direction of your move:\n"
-      "(u)p, (d)own, (l)eft, or (r)ight\n");
+      "(u)p, (d)own, (l)eft, (r)ight, or (c)ancel\n");
       fflush(stdin);
       scanf("%c", &input);
 		switch(input) {
@@ -136,6 +142,8 @@ void chooseMove(coords piece) {
 					RIGHTOF(piece) = 0;
 				}
 				break;
+         case 'c':
+            break;
 			default:
 				printf("Invalid move.\n");
 				input = 0;
