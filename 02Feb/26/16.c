@@ -18,11 +18,6 @@ char board[ROWS][COLUMNS] = {
    { 9, 10, 11, 12, 13, 14, 15, 16 },
    { 1,  2,  3,  4,  5,  6,  7,  8 }
 };
-// char board[ROWS][COLUMNS] = {
-//    { 0,  0,  0,  0,  0,  0,  0,  0},
-//    { '@',  '@',  '@',  '@',  '@',  '@',  '@',  '@'},
-//    { '@',  '@',  '@',  '@',  '@',  '@',  '@',  '@'}
-// };
 
 typedef struct coordinates {
    char x;
@@ -44,16 +39,27 @@ unsigned char validMoves = 0;
 #define LEFTBIT 4
 #define RIGHTBIT 8
 
+struct savedMove {
+   char *from;
+   char *to;
+   char *jumped;
+   char jumpedPiece;
+};
+struct savedMove saves[16];
+static int nSavedMoves = 0;
+
+char playing = 1;
+
 void printBoard(void);
 coords choosePiece(void);
 void chooseMove(coords piece);
+void restoreMove(void);
 
 int main() {
-	while(1) {
+	while(playing) {
 		printBoard();
 		chooseMove(choosePiece());
 	}
-   
    return 0;
 }
 
@@ -63,12 +69,13 @@ coords choosePiece(void) {
       printf("Enter coordinates of a piece (x y), 0 0 to rewind or 9 9 to quit: ");
       fflush(stdin);
       scanf("%d %d", &(chosen.x), &(chosen.y));
-/* MISSING */
       if (chosen.x == 0 && chosen.y == 0) {
-         printf("NEED TO IMPLEMENT REWIND.\n");
+         restoreMove();
+         break;
       } else if (chosen.x == 9 && chosen.y == 9) {
-         printf("NEED TO IMPLEMENT QUITTING.\n");
-/* FEATURES */
+         printf("Thank you for playing.\n");
+         playing = 0;
+         break;
       } else if (chosen.x > COLUMNS || chosen.y > ROWS || chosen.x < 1 || chosen.y < 1) {
          printf("Invalid coordinates.\n");
       } else if (board[chosen.y-1][chosen.x-1] == 0) {
@@ -106,7 +113,31 @@ char checkMove(unsigned char directionBit) {
 	}
 }
 
+void move(char* from, char *jumped, char *to) {
+   nSavedMoves++;
+   saves[nSavedMoves - 1].from = from;
+   saves[nSavedMoves - 1].to = to;
+   saves[nSavedMoves - 1].jumped = jumped;
+   saves[nSavedMoves - 1].jumpedPiece = *jumped;
+   *to = *from;
+   *from = *jumped = 0;
+}
+
+void restoreMove(void) {
+   if (nSavedMoves > 0) {
+      nSavedMoves--;
+      *saves[nSavedMoves].from = *saves[nSavedMoves].to;
+      *saves[nSavedMoves].jumped = saves[nSavedMoves].jumpedPiece;
+      *saves[nSavedMoves].to = 0;
+   } else {
+      printf("No moves to rewind.\n");
+   }
+}
+
 void chooseMove(coords piece) {
+   if ((piece.x == 0 && piece.y == 0) || (piece.x == 9 && piece.y == 9)) {
+      return;
+   }
    char input = 0;
    while (input == 0) {
       printf("Select the direction of your move:\n"
@@ -116,30 +147,22 @@ void chooseMove(coords piece) {
 		switch(input) {
 			case 'u':
 				if (input = checkMove(UPBIT)) {
-					TWOABOVE(piece) = HERE(piece);
-					HERE(piece) = 0;
-					ABOVE(piece) = 0;
+               move(&HERE(piece), &ABOVE(piece), &TWOABOVE(piece));
 				}
 				break;
 			case 'd':
 				if (input = checkMove(DOWNBIT)) {
-					TWOBELOW(piece) = HERE(piece);
-					HERE(piece) = 0;
-					BELOW(piece) = 0;
+               move(&HERE(piece), &BELOW(piece), &TWOBELOW(piece));
 				}
 				break;
 			case 'l':
 				if (input = checkMove(LEFTBIT)) {
-					TWOLEFTOF(piece) = HERE(piece);
-					HERE(piece) = 0;
-					LEFTOF(piece) = 0;
+               move(&HERE(piece), &LEFTOF(piece), &TWOLEFTOF(piece));
 				}
 				break;
 			case 'r':
 				if (input = checkMove(RIGHTBIT)) {
-					TWORIGHTOF(piece) = HERE(piece);
-					HERE(piece) = 0;
-					RIGHTOF(piece) = 0;
+               move(&HERE(piece), &RIGHTOF(piece), &TWORIGHTOF(piece));
 				}
 				break;
          case 'c':
@@ -165,10 +188,8 @@ void printBoard(void) {
 				printf(" - ");
 			} else if (pos < 10) {
 				printf(" %c ", pos + '0');
-				// printf(" %c ", pos);
 			} else {
 				printf("1%c ", pos + '0' - 10);
-				// printf(" %c ", pos);
 			}
 		}
       printf("\n");
