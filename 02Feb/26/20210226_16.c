@@ -18,11 +18,13 @@ char board[ROWS][COLUMNS] = {
    { 9, 10, 11, 12, 13, 14, 15, 16 },
    { 1,  2,  3,  4,  5,  6,  7,  8 }
 };
+#define MAX_MOVES 15 /* 15 moves cannot be made without winning */
 
 typedef struct coordinates {
    char x;
    char y;
 } coords;
+/* These are used to check, store and modify the values at certain positions: */
 #define HERE(coords) board[coords.y-1][coords.x-1]
 #define BELOW(coords) board[coords.y][coords.x-1]
 #define TWOBELOW(coords) board[coords.y+1][coords.x-1]
@@ -45,7 +47,7 @@ struct savedMove {
    char *jumped;
    char jumpedPiece;
 };
-struct savedMove saves[16];
+struct savedMove saves[MAX_MOVES];
 static int nSavedMoves = 0;
 
 char playing = 1;
@@ -58,9 +60,43 @@ void restoreMove(void);
 int main() {
 	while(playing) {
 		printBoard();
+      if (nSavedMoves == MAX_MOVES) {
+         printf("You win!");
+         break;
+      }
 		chooseMove(choosePiece());
 	}
    return 0;
+}
+
+char checkMove(unsigned char directionBit) {
+	if (!(validMoves & directionBit)) {
+		printf("Invalid move!\n");
+		return 0;
+	} else {
+		return 1;
+	}
+}
+
+void move(char* from, char *jumped, char *to) {
+   nSavedMoves++;
+   saves[nSavedMoves - 1].from = from;
+   saves[nSavedMoves - 1].to = to;
+   saves[nSavedMoves - 1].jumped = jumped;
+   saves[nSavedMoves - 1].jumpedPiece = *jumped;
+   *to = *from;
+   *from = *jumped = 0;
+}
+
+void restoreMove(void) {
+   if (nSavedMoves > 0) {
+      nSavedMoves--;
+      *saves[nSavedMoves].from = *saves[nSavedMoves].to;
+      *saves[nSavedMoves].jumped = saves[nSavedMoves].jumpedPiece;
+      *saves[nSavedMoves].to = 0;
+   } else {
+      printf("No moves to rewind.\n");
+   }
 }
 
 coords choosePiece(void) {
@@ -102,36 +138,6 @@ coords choosePiece(void) {
       }
    }
    return chosen;
-}
-
-char checkMove(unsigned char directionBit) {
-	if (!(validMoves & directionBit)) {
-		printf("Invalid move!\n");
-		return 0;
-	} else {
-		return 1;
-	}
-}
-
-void move(char* from, char *jumped, char *to) {
-   nSavedMoves++;
-   saves[nSavedMoves - 1].from = from;
-   saves[nSavedMoves - 1].to = to;
-   saves[nSavedMoves - 1].jumped = jumped;
-   saves[nSavedMoves - 1].jumpedPiece = *jumped;
-   *to = *from;
-   *from = *jumped = 0;
-}
-
-void restoreMove(void) {
-   if (nSavedMoves > 0) {
-      nSavedMoves--;
-      *saves[nSavedMoves].from = *saves[nSavedMoves].to;
-      *saves[nSavedMoves].jumped = saves[nSavedMoves].jumpedPiece;
-      *saves[nSavedMoves].to = 0;
-   } else {
-      printf("No moves to rewind.\n");
-   }
 }
 
 void chooseMove(coords piece) {
