@@ -91,3 +91,15 @@ int atoi(char *string) {
     }
     return result * sign;
 }
+
+void drawArray2D(char *array, unsigned rowLen, unsigned columnLen, char *formatString) {
+    if (*formatString == '\0') {
+        formatString = "%c ";
+    }
+    for (int i = 0; i < columnLen; i++) {
+        for (int j = 0; j < rowLen; j++) {
+            printf(formatString, array[i*rowLen + j]);
+        }
+        printf("\n");
+    }
+}

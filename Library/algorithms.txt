@@ -1,1 +1,2 @@
+    Cumulative Moving Average
 NEW_AVERAGE = ( (double) CURRENT_ELEM + NUM_OF_PASSED_ELEMENTS * OLD_AVERAGE ) / NUM_OF_PRESENT_ELEMENTS;

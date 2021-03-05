@@ -12,4 +12,6 @@ double atof(char *str);
 unsigned lensz(char *string);
 char *revsz(char string[]);
 
+void drawArray2D(char *array, unsigned rowLen, unsigned columnLen, char *formatString);
+
 #endif
