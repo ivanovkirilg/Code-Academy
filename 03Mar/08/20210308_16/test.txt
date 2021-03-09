@@ -1,0 +1,5 @@
+Some
+text
+delete line 3
+that just
+goes on.
