@@ -1,3 +1,5 @@
 *.exe
 .vscode
 test.c
+00.c
+game
