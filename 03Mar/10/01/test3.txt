@@ -1,0 +1,5 @@
+Some text
+to compare
+that is 
+different on this line
+but longer in file 3
