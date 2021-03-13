@@ -1,4 +1,0 @@
-Some text
-to compare
-that is 
-different on this line

@@ -1,8 +1,0 @@
-Matched (brackets).
-    Want to check <> or any other combination?
-    Just add an appropriate Bracket object,
-    and call track..() and finalize..() for it.
-Two {curly {left {unclosed}.
-One square closed] unmatched.
-(The check works
-across lines.)
