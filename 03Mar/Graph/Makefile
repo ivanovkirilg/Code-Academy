@@ -4,14 +4,15 @@ DTARGET = debug.exe
 CFLAGS = -Wall -Werror -pedantic -o # Flags for regular compilation
 DFLAGS = -g -Wall -DDEBUG -o # Flags for debugging
 SOURCE = test.c functions.c
+HEADER = header.h
 
-compile: $(SOURCE)
+compile: $(SOURCE) $(HEADER)
 	$(CC) $(SOURCE) $(CFLAGS) $(CTARGET)
 
 clean:
 	del *.exe
 
-debug: $(SOURCE)
+debug: $(SOURCE) $(HEADER)
 	$(CC) $(SOURCE) $(DFLAGS) $(DTARGET)
 	gdb $(DTARGET)
 	del debug.exe

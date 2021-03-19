@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "header.h"
 
+#define MAX_VISITS 4
+
 struct tagGraph {
     int vertexCount;
     char *vertices;
@@ -27,6 +29,7 @@ graph_t *generateGraphFromFile(FILE *from) {
     fgets(line, lineLen, from);
     
     if (createVerticesFromString(new, line) == -1) {
+        free(new);
         return NULL;
     }
 
@@ -36,6 +39,7 @@ graph_t *generateGraphFromFile(FILE *from) {
     for (int i = 0; i < new->vertexCount; i++) {
         fgets(line, lineLen, from);
         if (fillMatrixFromString(new, i * new->vertexCount, line) == -1) {
+            free(new->adjecencyMatrix), free(new);
             return NULL;
         }
     }
@@ -45,6 +49,7 @@ graph_t *generateGraphFromFile(FILE *from) {
     #endif
 
     if (calculateVertexPriorities(new) == -1) {
+        free(new);
         return NULL;
     }
 
@@ -113,6 +118,7 @@ int calculateVertexPriorities(graph_t *graph) {
         }
         if (graph->priorities[i] == graph->vertexCount) {
             printf("Found an isolated vertex in the graph.\n");
+            free(graph->priorities);
             return -1;
         }
         #ifdef DEBUG
@@ -123,30 +129,6 @@ int calculateVertexPriorities(graph_t *graph) {
 }
 
 /* FIND PATHS IN A GRAPH */
-
-int findBestVertexFrom(graph_t *graph, int vertex, char *visited) {
-    int bestVertex = -1, bestPriority = 0;
-
-    for (int i = 0; i < graph->vertexCount; i++) {
-        if (graph->adjecencyMatrix[vertex * graph->vertexCount + i] == '1') {
-            if (graph->priorities[i] > bestPriority && !visited[i]) {
-                bestVertex = i;
-                bestPriority = graph->priorities[bestVertex];
-            }
-        }
-    }
-
-    /* If an unvisited vertex has not been found, pick any adjacent one */
-    if (bestVertex == -1) {
-        for (int i = 0; i < graph->vertexCount; i++) {
-            if (graph->adjecencyMatrix[vertex * graph->vertexCount + i] == '1') {
-                bestVertex = i;
-            }
-        }
-    }
-
-    return bestVertex;
-}
 
 char *findWalkFromVertex(graph_t *graph, int vertex) {
     size_t walkLength = graph->vertexCount;
@@ -162,7 +144,7 @@ char *findWalkFromVertex(graph_t *graph, int vertex) {
 
     do {
         if (walkLength == steps + 2) {
-            walk = realloc(walk, walkLength *= 1.5);
+            walk = (char *) realloc(walk, walkLength *= 1.5);
             checkAllocationError(walk, "a full walk", return NULL);
         }
 
@@ -174,10 +156,10 @@ char *findWalkFromVertex(graph_t *graph, int vertex) {
         steps++;
         walk[steps] = graph->vertices[vertex];
         if (visitedArray[vertex] == 0) {
-            visitedArray[vertex] = 1;
             visitedCount++;
         }
-
+        visitedArray[vertex]++;
+        
     } while (visitedCount < graph->vertexCount);
 
     walk[steps + 1] = '\0';
@@ -185,4 +167,24 @@ char *findWalkFromVertex(graph_t *graph, int vertex) {
     free(visitedArray);
 
     return walk;
+}
+
+int findBestVertexFrom(graph_t *graph, int vertex, char *visited) {
+    int bestVertex = -1, bestPriority = 0;
+
+    for (int v = 0; v < MAX_VISITS; v++) {
+        for (int i = 0; i < graph->vertexCount; i++) {
+            if (graph->adjecencyMatrix[vertex * graph->vertexCount + i] == '1') {
+                if ((graph->priorities[i] > bestPriority) && (visited[i] <= v)) {
+                    bestVertex = i;
+                    bestPriority = graph->priorities[bestVertex];
+                }
+            }
+        }
+        if (bestVertex != -1) {
+            break;
+        }
+    }
+
+    return bestVertex;
 }
