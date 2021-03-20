@@ -8,6 +8,8 @@
 
 typedef struct tagGraph graph_t;
 
+void printWalk(const char *walk);
+
 graph_t *generateGraphFromFile(FILE *from);
 int countVertices(const char *string);
 int createVerticesFromString(graph_t *emptyGraph, const char *from);

@@ -13,6 +13,14 @@ struct tagGraph {
 
 /* USER MENU AND INTERFACE */
 
+void printWalk(const char *walk) {
+    do {
+        printf("%c -> ", *walk);
+    } while ( *(++walk + 1) != '\0');
+    printf("%c\n", *walk);
+    return;
+}
+
 /* GENERATE A GRAPH STRUCT FROM A FILE */
 
 graph_t *generateGraphFromFile(FILE *from) {
@@ -131,14 +139,19 @@ int calculateVertexPriorities(graph_t *graph) {
 /* FIND PATHS IN A GRAPH */
 
 char *findWalkFromVertex(graph_t *graph, int vertex) {
+    if (vertex >= graph->vertexCount) {
+        printf("Invalid vertex.\n");
+        return NULL;
+    }
+
     size_t walkLength = graph->vertexCount;
     char *walk = (char *) malloc(walkLength);
-    checkAllocationError(walk, "a new walk", return NULL);
-    
     char *visitedArray = (char *) calloc(graph->vertexCount, sizeof(char));
+    int steps = 0, visitedCount = 1;
+    
+    checkAllocationError(walk, "a new walk", return NULL);
     checkAllocationError(visitedArray, "a new walk", return NULL);
 
-    int steps = 0, visitedCount = 1;
     walk[0] = graph->vertices[vertex];
     visitedArray[vertex] = 1;
 
@@ -172,10 +185,23 @@ char *findWalkFromVertex(graph_t *graph, int vertex) {
 int findBestVertexFrom(graph_t *graph, int vertex, char *visited) {
     int bestVertex = -1, bestPriority = 0;
 
-    for (int v = 0; v < MAX_VISITS; v++) {
+    for (int i = 0; i < graph->vertexCount; i++) {
+        if (graph->adjecencyMatrix[vertex * graph->vertexCount + i] == '1') {
+            if ((graph->priorities[i] > bestPriority) && (visited[i] == 0)) {
+                bestVertex = i;
+                bestPriority = graph->priorities[bestVertex];
+            }
+        }
+    }
+    if (bestVertex != -1) {
+        return bestVertex;
+    }
+
+    bestPriority = graph->vertexCount;
+    for (int v = 1; v < MAX_VISITS; v++) {
         for (int i = 0; i < graph->vertexCount; i++) {
             if (graph->adjecencyMatrix[vertex * graph->vertexCount + i] == '1') {
-                if ((graph->priorities[i] > bestPriority) && (visited[i] <= v)) {
+                if ((graph->priorities[i] < bestPriority) && (visited[i] <= v)) {
                     bestVertex = i;
                     bestPriority = graph->priorities[bestVertex];
                 }
