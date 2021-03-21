@@ -26,6 +26,7 @@ $(TAR_LIST): $(SRC_LIST) $(HDR_LIST)
 
 cleanold:
 	rm -f shared/$(LNK_LIB).[^$(VER_LIB)]
+	rm -f shared/$(LNK_LIST).[^$(VER_LIST)]
 
 purge:
 	rm -f shared/*

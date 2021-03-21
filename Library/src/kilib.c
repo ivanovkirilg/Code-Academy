@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 void binprint(unsigned long long value, unsigned n_bits) {
     unsigned m = 1u << (n_bits - 1);
@@ -26,7 +27,7 @@ unsigned msb(unsigned long long number) {
     return index;
 }
 
-unsigned lensz(char *string) {
+unsigned lensz(const char *string) {
     unsigned i = 0;
     while (string[i]) i++;
     return i;
@@ -39,6 +40,14 @@ char *revsz(char string[]) {
         string[i] -= string[j];
     }
     return string;
+}
+
+int endcmpsz(const char *string, const char *ending) {
+    string = strrchr(string, *ending);
+    if (string == NULL) {
+        return -1;
+    }
+    return strcmp(string, ending);
 }
 
 double atof(char *string) {

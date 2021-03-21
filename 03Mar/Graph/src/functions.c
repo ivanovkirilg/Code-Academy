@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "header.h"
 
-#define MAX_VISITS 4
-#define VERTICES_PER_LINE 8
 
 struct tagGraph {
     int vertexCount;
@@ -14,6 +13,42 @@ struct tagGraph {
 
 /* USER MENU AND INTERFACE */
 
+#define EXTENSION ".txt"
+#define DEFAULT_FILENAME "g0.txt"
+#define DEFAULT_PATH "data/"
+#define FILENAME_SIZE 32
+#define PATH_SIZE 38
+FILE *chooseFile(void) {
+    char fileName[FILENAME_SIZE] = DEFAULT_FILENAME;
+    char path[PATH_SIZE] = DEFAULT_PATH;
+    printf("Press [enter] to load default file.\n" "Enter filename to load a custom file from %s", path);
+    fflush(stdin);
+    if (ungetc(getchar(), stdin) != '\n') {
+        scanf("%s", fileName);
+        if (strend(fileName, EXTENSION) != 0) {
+            strcat(fileName, EXTENSION);
+        }
+    }
+    strcat(path, fileName);
+    
+    FILE *fp = fopen(path, "r");
+    if (fp == NULL) {
+        printf("Failed to open file %s.\n", path);
+        return chooseFile();
+    } else {
+        #ifdef DEBUG
+        printf("Reading from %s\n", path);
+        #endif
+        return fp;
+    }
+}
+#undef EXTENSION
+#undef DEFAULT_FILENAME
+#undef DEFAULT_PATH
+#undef FILENAME_SIZE
+#undef PATH_SIZE
+
+#define VERTICES_PER_LINE 8
 void printWalk(const char *walk) {
     int counter = -1;
     do {
@@ -26,6 +61,15 @@ void printWalk(const char *walk) {
     } while ( *(++walk + 1) != '\0');
     printf("%c\n", *walk);
     return;
+}
+#undef VERTICES_PER_LINE
+
+int strend(const char *string, const char *ending) {
+    string = strrchr(string, *ending);
+    if (string == NULL) {
+        return -1;
+    }
+    return strcmp(string, ending);
 }
 
 /* GRAPH GENERATION */
@@ -202,34 +246,26 @@ char *findWalkFromVertex(graph_t *graph, int vertex) {
 }
 
 int findBestVertexFrom(graph_t *graph, int vertex, char *visited) {
-    int bestVertex = -1, bestPriority = 0;
+    int bestVertex = -1, bestPriority = 0, backupVertex = -1, lowestPriority = graph->vertexCount;
 
     for (int i = 0; i < graph->vertexCount; i++) {
         if (graph->adjecencyMatrix[vertex * graph->vertexCount + i] == '1') {
             if ((graph->priorities[i] > bestPriority) && (visited[i] == 0)) {
                 bestVertex = i;
                 bestPriority = graph->priorities[bestVertex];
+            } else if (graph->priorities[i] < lowestPriority) {
+                backupVertex = i;
+                lowestPriority = graph->priorities[backupVertex];
             }
         }
     }
-    if (bestVertex != -1) {
+    #ifdef DEBUG
+    printf("best: % d(%d), backup: % d(%d)\n", bestVertex, bestPriority, backupVertex, lowestPriority);
+    #endif
+
+    if (bestVertex == -1) {
+        return backupVertex;
+    } else {
         return bestVertex;
     }
-
-    bestPriority = graph->vertexCount;
-    for (int v = 1; v < MAX_VISITS; v++) {
-        for (int i = 0; i < graph->vertexCount; i++) {
-            if (graph->adjecencyMatrix[vertex * graph->vertexCount + i] == '1') {
-                if ((graph->priorities[i] < bestPriority) && (visited[i] <= v)) {
-                    bestVertex = i;
-                    bestPriority = graph->priorities[bestVertex];
-                }
-            }
-        }
-        if (bestVertex != -1) {
-            break;
-        }
-    }
-
-    return bestVertex;
 }

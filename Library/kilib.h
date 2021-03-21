@@ -9,7 +9,7 @@ unsigned msb(unsigned long long number);
 int atoi(char *string);
 double atof(char *str);
 
-unsigned lensz(char *string);
+unsigned lensz(const char *string);
 char *revsz(char string[]);
 
 void drawArray2D(char *array, unsigned rowLen, unsigned columnLen, char *formatString);
