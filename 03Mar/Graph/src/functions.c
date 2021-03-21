@@ -3,6 +3,7 @@
 #include "header.h"
 
 #define MAX_VISITS 4
+#define VERTICES_PER_LINE 8
 
 struct tagGraph {
     int vertexCount;
@@ -14,14 +15,20 @@ struct tagGraph {
 /* USER MENU AND INTERFACE */
 
 void printWalk(const char *walk) {
+    int counter = -1;
     do {
+        if (counter % VERTICES_PER_LINE == VERTICES_PER_LINE - 1) {
+            printf("\n  -> ");
+            counter++;
+        }
         printf("%c -> ", *walk);
+        counter++;
     } while ( *(++walk + 1) != '\0');
     printf("%c\n", *walk);
     return;
 }
 
-/* GENERATE A GRAPH STRUCT FROM A FILE */
+/* GRAPH GENERATION */
 
 graph_t *generateGraphFromFile(FILE *from) {
     graph_t *new = (graph_t *) malloc(sizeof(graph_t));
@@ -42,24 +49,28 @@ graph_t *generateGraphFromFile(FILE *from) {
     }
 
     new->adjecencyMatrix = (char *) malloc(new->vertexCount * new->vertexCount);
-    checkAllocationError(new->adjecencyMatrix, "adjacency matrix", return NULL);
+    checkAllocationError(new->adjecencyMatrix, "adjacency matrix", 
+        free(new->vertices); free(new); return NULL);
 
     for (int i = 0; i < new->vertexCount; i++) {
         fgets(line, lineLen, from);
         if (fillMatrixFromString(new, i * new->vertexCount, line) == -1) {
-            free(new->adjecencyMatrix), free(new);
+            free(new->vertices), free(new->adjecencyMatrix), free(new);
             return NULL;
         }
     }
 
-    #ifdef DEBUG
-    printf("%.*s\n%.*s\n", new->vertexCount, new->vertices, new->vertexCount * new->vertexCount, new->adjecencyMatrix);
-    #endif
-
     if (calculateVertexPriorities(new) == -1) {
-        free(new);
+        free(new->vertices), free(new->adjecencyMatrix), free(new);
         return NULL;
     }
+
+    #ifdef DEBUG
+    printf("      %.*s\n", new->vertexCount, new->vertices);
+    for (int i = 0; i < new->vertexCount; i++) {
+        printf("%c,%2d: %.*s\n", new->vertices[i], new->priorities[i], new->vertexCount, new->adjecencyMatrix + i * new->vertexCount);
+    }
+    #endif
 
     return new;
 }
@@ -129,11 +140,17 @@ int calculateVertexPriorities(graph_t *graph) {
             free(graph->priorities);
             return -1;
         }
-        #ifdef DEBUG
-        printf("%c: %d\t", graph->vertices[i], graph->priorities[i]);
-        #endif
     }
+
     return 0;
+}
+
+void destroyGraph(graph_t *graph) {
+    free(graph->priorities);
+    free(graph->adjecencyMatrix);
+    free(graph->vertices);
+    free(graph);
+    return;
 }
 
 /* FIND PATHS IN A GRAPH */
@@ -149,8 +166,10 @@ char *findWalkFromVertex(graph_t *graph, int vertex) {
     char *visitedArray = (char *) calloc(graph->vertexCount, sizeof(char));
     int steps = 0, visitedCount = 1;
     
-    checkAllocationError(walk, "a new walk", return NULL);
-    checkAllocationError(visitedArray, "a new walk", return NULL);
+    checkAllocationError(walk, "a new walk", 
+        return NULL);
+    checkAllocationError(visitedArray, "a new walk", 
+        free(walk); return NULL);
 
     walk[0] = graph->vertices[vertex];
     visitedArray[vertex] = 1;

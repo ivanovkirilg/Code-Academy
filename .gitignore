@@ -1,4 +1,5 @@
 *.exe
+*.out
 .vscode
 test.c
 00.c

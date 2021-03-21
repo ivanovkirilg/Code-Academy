@@ -1,18 +1,21 @@
 CC = gcc
-CTARGET = pathfinder.exe
-DTARGET = debug.exe
+CTARGET = pathfinder
+DTARGET = debug
 CFLAGS = -Wall -Werror -pedantic -o # Flags for regular compilation
 DFLAGS = -g -Wall -DDEBUG -o # Flags for debugging
-SOURCE = test.c functions.c
-HEADER = header.h
+SOURCE = ./src/functions.c ./src/test.c
+HEADER = ./src/header.h
 
 compile: $(SOURCE) $(HEADER)
 	$(CC) $(SOURCE) $(CFLAGS) $(CTARGET)
 
-clean:
-	del *.exe
-
 debug: $(SOURCE) $(HEADER)
 	$(CC) $(SOURCE) $(DFLAGS) $(DTARGET)
-	gdb $(DTARGET)
-	del debug.exe
+	-gdb $(DTARGET)
+	#del debug.exe 	# Windows
+	#rm -f $(DTARGET) 	# Linux
+
+clean:
+	#-del *.exe 		# Windows
+	rm -f $(DTARGET) 	# Linux
+	rm -f $(CTARGET) 	# Linux
