@@ -1,6 +1,4 @@
-OS = Linux
-
-ifeq ($(OS), Win)
+ifeq ($(OS), Windows_NT)
 REM = del
 EXECEXT = .exe
 MAKE = mingw32-make.exe
