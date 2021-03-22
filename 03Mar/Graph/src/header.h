@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdio.h>
 
 #define checkAllocationError(ptr, object, action) \
@@ -6,10 +8,18 @@
                 action; \
             }
 
+#define STATE_CONT 0
+#define STATE_OPEN 1
+#define STATE_QUIT 2
+
 typedef struct tagGraph graph_t;
 
 FILE *chooseFile(void);
+int chooseVertex(const graph_t *graph);
+void printVertices(const graph_t *graph);
+void printMatrix(const graph_t *graph);
 void printWalk(const char *walk);
+int promptNewWalk(void);
 int strend(const char *string, const char *ending);
 
 graph_t *generateGraphFromFile(FILE *from);

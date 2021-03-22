@@ -3,7 +3,6 @@
 #include <string.h>
 #include "header.h"
 
-
 struct tagGraph {
     int vertexCount;
     char *vertices;
@@ -11,29 +10,44 @@ struct tagGraph {
     short *priorities;
 };
 
-/* USER MENU AND INTERFACE */
+/* USER INTERFACE */
 
-#define EXTENSION ".txt"
-#define DEFAULT_FILENAME "g0.txt"
-#define DEFAULT_PATH "data/"
-#define FILENAME_SIZE 32
-#define PATH_SIZE 38
+#define PRINT_SEPARATOR printf("-\t-\t-\t-\t-\t-\n")
+#define WAIT_FOR_INPUT while (getchar() != '\n')
+
 FILE *chooseFile(void) {
-    char fileName[FILENAME_SIZE] = DEFAULT_FILENAME;
+    #define EXTENSION ".txt"
+    #define DEFAULT_FILENAME "g0.txt"
+    #define DEFAULT_PATH "data/"
+    #define FILENAME_SIZE 32
+    #define PATH_SIZE 38
+
+    char fileName[FILENAME_SIZE] = "";
     char path[PATH_SIZE] = DEFAULT_PATH;
-    printf("Press [enter] to load default file.\n" "Enter filename to load a custom file from %s", path);
-    fflush(stdin);
-    if (ungetc(getchar(), stdin) != '\n') {
-        scanf("%s", fileName);
-        if (strend(fileName, EXTENSION) != 0) {
-            strcat(fileName, EXTENSION);
-        }
+    PRINT_SEPARATOR;
+    printf("Press [enter] to load default file (%s).\n", DEFAULT_FILENAME);
+    printf("Enter filename to load a custom file from %s", path);
+    
+    fgets(fileName, FILENAME_SIZE, stdin);
+    fileName[strlen(fileName) - 1] = '\0';
+    
+    if (fileName[0] == '\0') {
+        strcat(fileName, DEFAULT_FILENAME);
     }
+
+    if (strend(fileName, EXTENSION) != 0) {
+        strcat(fileName, EXTENSION);
+    }
+    
     strcat(path, fileName);
     
     FILE *fp = fopen(path, "r");
     if (fp == NULL) {
         printf("Failed to open file %s.\n", path);
+        if (strcmp(fileName, DEFAULT_FILENAME) == 0) {
+            printf("Default file missing. Terminating.\n");
+            exit(EXIT_FAILURE);
+        }
         return chooseFile();
     } else {
         #ifdef DEBUG
@@ -41,15 +55,110 @@ FILE *chooseFile(void) {
         #endif
         return fp;
     }
-}
-#undef EXTENSION
-#undef DEFAULT_FILENAME
-#undef DEFAULT_PATH
-#undef FILENAME_SIZE
-#undef PATH_SIZE
 
-#define VERTICES_PER_LINE 8
+    #undef EXTENSION
+    #undef DEFAULT_FILENAME
+    #undef DEFAULT_PATH
+    #undef FILENAME_SIZE
+    #undef PATH_SIZE
+}
+
+int chooseVertex(const graph_t *graph) {
+    static int vertex = 0;
+    vertex %= graph->vertexCount;
+
+    while (1) {
+        PRINT_SEPARATOR;
+        printf("Press [enter] to find a walk from the default vertex: %c\n", graph->vertices[vertex]);
+        printf("Type 'vert' to see all vertices of the loaded graph.\n");
+        printf("Type 'matrix' to see the adjacency matrix of the graph.\n");
+        printf("Type in the name of a vertex to find a walk from it.\n");
+
+        char input[8] = "";
+        fgets(input, 8, stdin);
+        input[strlen(input) - 1] = '\0';
+
+        if (input[0] == '\0') {
+            return vertex++;
+        }
+        
+        if (strcmp(input, "vert") == 0) {
+            PRINT_SEPARATOR;
+            printf("Vertices in currently loaded graph:\n");
+            printVertices(graph);
+            WAIT_FOR_INPUT;
+            continue;
+        }
+
+        if (strcmp(input, "matrix") == 0) {
+            PRINT_SEPARATOR;
+            printf("Adjacency matrix of the currently loaded graph:\n");
+            printMatrix(graph);
+            WAIT_FOR_INPUT;
+            continue;
+        }
+
+        for (int i = 0; i < graph->vertexCount; i++) {
+            if (graph->vertices[i] == *input) {
+                return i;
+            }
+        }
+        PRINT_SEPARATOR;
+        printf("Vertex %c not found in the loaded graph.\n", *input);
+        WAIT_FOR_INPUT;
+    }
+}
+
+int promptNewWalk(void) {
+    while (1) {
+        PRINT_SEPARATOR;
+        printf("Press [enter] to find a new walk.\n");
+        printf("Type 'new' to open another file.\n");
+        printf("Type 'quit' to terminate the program.\n");
+
+        char input[8] = "";
+        fgets(input, 8, stdin);
+        input[strlen(input) - 1] = '\0';
+
+        if (input[0] == '\0') {
+            return STATE_CONT;
+        }
+
+        if (strcmp(input, "new") == 0) {
+            return STATE_OPEN;
+        }
+
+        if (strcmp(input, "quit") == 0) {
+            return STATE_QUIT;
+        }
+
+        printf("Invalid command %s.\n", input);
+        WAIT_FOR_INPUT;
+    }
+}
+
+void printVertices(const graph_t *graph) {
+    for (int i = 0; i < graph->vertexCount - 1; i++) {
+        printf("%c, ", graph->vertices[i]);
+    }
+    printf("%c\n", graph->vertices[graph->vertexCount - 1]);
+}
+
+void printMatrix(const graph_t *graph) {
+    printf("\t");
+    printVertices(graph);
+    for (int i = 0; i < graph->vertexCount; i++) {
+        printf("%c:\t", graph->vertices[i]);
+        for (int j = 0; j < graph->vertexCount; j++) {
+            printf("%c  ", graph->adjecencyMatrix[i * graph->vertexCount + j]);
+        }
+        putchar('\n');
+    }
+}
+
 void printWalk(const char *walk) {
+    #define VERTICES_PER_LINE 8
+    
     int counter = -1;
     do {
         if (counter % VERTICES_PER_LINE == VERTICES_PER_LINE - 1) {
@@ -60,9 +169,13 @@ void printWalk(const char *walk) {
         counter++;
     } while ( *(++walk + 1) != '\0');
     printf("%c\n", *walk);
+
+    WAIT_FOR_INPUT;
+
     return;
+
+    #undef VERTICES_PER_LINE
 }
-#undef VERTICES_PER_LINE
 
 int strend(const char *string, const char *ending) {
     string = strrchr(string, *ending);
@@ -71,6 +184,9 @@ int strend(const char *string, const char *ending) {
     }
     return strcmp(string, ending);
 }
+
+#undef PRINT_SEPARATOR
+#undef WAIT_FOR_INPUT
 
 /* GRAPH GENERATION */
 
@@ -174,6 +290,13 @@ int calculateVertexPriorities(graph_t *graph) {
     for (int i = 0; i < graph->vertexCount; i++) {
         graph->priorities[i] = graph->vertexCount;
 
+        int connections = 0;
+        for (int k = 0; k < graph->vertexCount; k++) {
+            if (graph->adjecencyMatrix[i * graph->vertexCount + k] == '1') {
+                connections++;
+            }
+        }
+
         for (int j = 0; j < graph->vertexCount; j++) {
             if (graph->adjecencyMatrix[j * graph->vertexCount + i] == '1') {
                 graph->priorities[i]--;
@@ -183,6 +306,10 @@ int calculateVertexPriorities(graph_t *graph) {
             printf("Found an isolated vertex in the graph.\n");
             free(graph->priorities);
             return -1;
+        }
+
+        if (connections == 0) {
+            graph->priorities[i] = 0;
         }
     }
 
@@ -197,7 +324,7 @@ void destroyGraph(graph_t *graph) {
     return;
 }
 
-/* FIND PATHS IN A GRAPH */
+/* WALK FINDING */
 
 char *findWalkFromVertex(graph_t *graph, int vertex) {
     if (vertex >= graph->vertexCount) {
@@ -225,9 +352,15 @@ char *findWalkFromVertex(graph_t *graph, int vertex) {
         }
 
         vertex = findBestVertexFrom(graph, vertex, visitedArray);
-        #ifdef DEBUG
-        if (vertex == -1) printf("IMPOSSIBLE\n");
-        #endif
+        if ((vertex == -1) || visitedArray[vertex] > 3) {
+            printf("Failed to complete walk:\n");
+            for (int i = 0; i < steps + 1; i++) {
+                printf("%c -> ", walk[i]);
+            }
+            printf("||\n");
+            free(walk);
+            return NULL;
+        }
 
         steps++;
         walk[steps] = graph->vertices[vertex];

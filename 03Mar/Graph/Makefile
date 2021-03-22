@@ -11,9 +11,9 @@ MAKE = make
 endif
 
 CC = gcc
-CTARGET = pathfinder$(EXECEXT)
+CTARGET = takeawalk$(EXECEXT)
 DTARGET = debug$(EXECEXT)
-CFLAGS = -Wall -Werror -pedantic -c # Flags for regular compilation
+CFLAGS = -Wall -Werror -pedantic -DRELEASE -c # Flags for regular compilation
 DFLAGS = -g -Wall -DDEBUG # Flags for debugging
 SOURCE = ./src/functions.c ./src/main.c
 HEADER = ./src/header.h
