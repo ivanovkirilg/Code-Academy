@@ -9,6 +9,7 @@ unsigned msb(unsigned long long number);
 int atoi(char *string);
 double atof(char *str);
 
+int endcmpsz(const char *string, const char *ending);
 unsigned lensz(const char *string);
 char *revsz(char string[]);
 
