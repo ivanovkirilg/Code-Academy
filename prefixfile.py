@@ -1,3 +1,4 @@
+#!/bin/python3.9
 import os
 
 option = input("Choose command:\t")
