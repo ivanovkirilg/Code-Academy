@@ -5,4 +5,5 @@ b.spam('alabala')
 
 print(b.text_to_list('alabala'))
 
-print(sys.path)
+# print(sys.path)
+# print(sys.modules.keys())

@@ -1,6 +1,16 @@
+.vscode
+
+# Executables
 *.exe
 *.out
-.vscode
+
+# C Source
 test.c
 00.c
+
+# Python
+__pycache__
+test.py
+
+# Miscellaneous
 game
