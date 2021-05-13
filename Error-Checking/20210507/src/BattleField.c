@@ -1,60 +1,7 @@
 #include "BattleField.h"
 #include "Ships.h"
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-
-/* Allocates memory for each terran ship and initializes it from 'terranFleetStr' */
-/* Initializes the terranFleet vector and pushes each ship */
-void generateTerranFleet(BattleField *battleField, const char *terranFleetStr) {
-  vectorInit(&(battleField->terranFleet), strlen(terranFleetStr));
-
-  for (int i = 0; terranFleetStr[i] != '\0'; i++) {
-    Ship *newShip = (Ship *) malloc(sizeof(Ship));
-
-    if (newShip == NULL) {
-      fprintf(stderr, "%s: memory allocation failed.", __func__);
-      exit(EXIT_FAILURE);
-    }
-
-    if (terranFleetStr[i] == 'v') {
-      initializeViking(newShip, i);
-    } else if (terranFleetStr[i] == 'b') {
-      initializeBattleCruiser(newShip, i);
-    }
-
-    if ( vectorPush(&(battleField->terranFleet), newShip) ) {
-      fprintf(stderr, "%s: Failed to add new ship.", __func__);
-      exit(EXIT_FAILURE);
-    }
-  }
-}
-
-/* Allocates memory for each protoss ship and initializes it from 'protossFleetStr' */
-/* Initializes the protossFleet vector and pushes each ship */
-void generateProtossFleet(BattleField *battleField, const char *protossFleetStr) {
-  vectorInit(&(battleField->protossFleet), strlen(protossFleetStr));
-
-  for (int i = 0; protossFleetStr[i] != '\0'; i++) {
-    Ship *newShip = (Ship *) malloc(sizeof(Ship));
-    
-    if (newShip == NULL) {
-      fprintf(stderr, "%s: memory allocation failed.", __func__);
-      exit(EXIT_FAILURE);
-    }
-    
-    if (protossFleetStr[i] == 'p') {
-      initializePhoenix(newShip, i);
-    } else if (protossFleetStr[i] == 'c') {
-      initializeCarrier(newShip, i);
-    }
-
-    if ( vectorPush(&(battleField->protossFleet), newShip) ) {
-      fprintf(stderr, "%s: Failed to add new ship.", __func__);
-      exit(EXIT_FAILURE);
-    }
-  }
-}
 
 /* Process each race's turn until one wins */
 void startBattle(BattleField *battleField) {
@@ -80,7 +27,7 @@ bool processTerranTurn(BattleField *battleField) {
   Ship *enemy = (Ship*) vectorBack(protFleet);
 
   if (enemy == NULL) {
-    fprintf(stderr, "%s: Enemy ship is missing.", __func__);
+    fprintf(stderr, "%s: Enemy ship is missing.\n", __func__);
     exit(EXIT_FAILURE);
   }
 
@@ -90,7 +37,7 @@ bool processTerranTurn(BattleField *battleField) {
     attacker = (Ship *) vectorGet(terFleet, i);
 
     if (attacker == NULL) {
-      fprintf(stderr, "%s: Attacking ship is missing.", __func__);
+      fprintf(stderr, "%s: Attacking ship is missing.\n", __func__);
       exit(EXIT_FAILURE);
     }
     
@@ -121,7 +68,7 @@ bool processProtossTurn(BattleField *battleField) {
   Ship *enemy = (Ship*) vectorBack(terFleet);
 
   if (enemy == NULL) {
-    fprintf(stderr, "%s: Enemy ship is missing.", __func__);
+    fprintf(stderr, "%s: Enemy ship is missing.\n", __func__);
     exit(EXIT_FAILURE);
   }
 
@@ -129,7 +76,7 @@ bool processProtossTurn(BattleField *battleField) {
     attacker = (Ship*) vectorGet(protFleet, i);
 
     if (attacker == NULL) {
-      fprintf(stderr, "%s: Attacking ship is missing.", __func__);
+      fprintf(stderr, "%s: Attacking ship is missing.\n", __func__);
       exit(EXIT_FAILURE);
     }
 

@@ -1,17 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "BattleField.h"
+#include "FleetGeneration.h"
 
 int main() {
-  const int buffSize = 50;
-  char terranFleet[buffSize];
-  char protossFleet[buffSize];
-  scanf("%s %s", terranFleet, protossFleet);
-
   BattleField battleField;
-  generateTerranFleet(&battleField, terranFleet);
-  generateProtossFleet(&battleField, protossFleet);
+  generateFleets(&battleField);
   startBattle(&battleField);
   deinit(&battleField);
 
