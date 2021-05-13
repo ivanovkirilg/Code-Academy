@@ -59,7 +59,7 @@ int vectorSet(Vector *vec, size_t idx, void *item) {
     vec->items[idx] = item;
     return 0;
   } else {
-    fprintf(stderr, "%s: Cannot set element %d outside vector with size %d.", __func__, idx, vec->size);
+    fprintf(stderr, "%s: Cannot set element %ld outside vector with size %ld.", __func__, idx, vec->size);
     return 1;
   }
 }
@@ -69,7 +69,7 @@ void* vectorGet(Vector *vec, size_t idx) {
     return vec->items[idx];
   }
   
-  fprintf(stderr, "%s: Element %d outside vector with size %d.", __func__, idx, vec->size);
+  fprintf(stderr, "%s: Element %ld outside vector with size %ld.", __func__, idx, vec->size);
   return NULL;
 }
 
@@ -84,7 +84,7 @@ void* vectorBack(Vector *vec) {
 
 int vectorDelete(Vector *vec, size_t idx) {
   if (idx >= vec->size) {
-    fprintf(stderr, "%s: Could not delete element %d.", __func__, idx);
+    fprintf(stderr, "%s: Could not delete element %ld.", __func__, idx);
     return 1;
   }
 
