@@ -10,16 +10,16 @@ typedef struct {
   size_t size;
 } Vector;
 
-void vectorInit(Vector *vec, size_t initialCapacity);
+int vectorInit(Vector *vec, size_t initialCapacity);
 size_t vectorGetSize(Vector *vec);
 bool vectorIsEmpty(Vector *vec);
-void vectorResize(Vector *vec, size_t newSize);
-void vectorPush(Vector *vec, void *elem);
-void vectorSet(Vector *vec, size_t idx, void *elem);
+int vectorResize(Vector *vec, size_t newSize);
+int vectorPush(Vector *vec, void *elem);
+int vectorSet(Vector *vec, size_t idx, void *elem);
 void* vectorGet(Vector *vec, size_t idx);
 void* vectorBack(Vector *vec);
-void vectorDelete(Vector *vec, size_t idx);
-void vectorPop(Vector *vec);
+int vectorDelete(Vector *vec, size_t idx);
+int vectorPop(Vector *vec);
 void vectorFree(Vector *vec);
 
 #endif /* VECTOR_H_ */

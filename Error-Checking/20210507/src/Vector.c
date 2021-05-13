@@ -1,11 +1,19 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "Vector.h"
 
-void vectorInit(Vector *vec, size_t initialCapacity) {
+int vectorInit(Vector *vec, size_t initialCapacity) {
   vec->capacity = initialCapacity;
   vec->size = 0;
   vec->items = malloc(sizeof(void*) * vec->capacity);
+  
+  if (vec->items) {
+    return 0;
+  } else {
+      fprintf(stderr, "%s: Memory allocation failed.", __func__);
+    return 1;
+  }
 }
 
 size_t vectorGetSize(Vector *v) {
@@ -16,28 +24,43 @@ bool vectorIsEmpty(Vector *vec) {
   return vec->size == 0;
 }
 
-void vectorResize(Vector *vec, size_t capacity) {
+int vectorResize(Vector *vec, size_t capacity) {
   void **items = realloc(vec->items, sizeof(void*) * capacity);
   if (items) {
     vec->items = items;
     vec->capacity = capacity;
+  } else {
+    fprintf(stderr, "%s: Memory reallocation failed.", __func__);
+    return 1;
   }
+
   if (vec->size >= capacity) {
     vec->size = capacity;
   }
+
+  return 0;
 }
 
-void vectorPush(Vector *vec, void *item) {
+int vectorPush(Vector *vec, void *item) {
   if (vec->capacity == vec->size) {
-    vectorResize(vec, vec->capacity * 2);
+    if ( vectorResize(vec, vec->capacity * 2) ) {
+      fprintf(stderr, "%s: Failed to expand vector. Item not added.", __func__);
+      return 1;
+    }
   }
   vec->items[vec->size] = item;
   vec->size++;
+
+  return 0;
 }
 
-void vectorSet(Vector *vec, size_t idx, void *item) {
+int vectorSet(Vector *vec, size_t idx, void *item) {
   if (idx < vec->size) {
     vec->items[idx] = item;
+    return 0;
+  } else {
+    fprintf(stderr, "%s: Cannot set element %d outside vector with size %d.", __func__, idx, vec->size);
+    return 1;
   }
 }
 
@@ -45,20 +68,24 @@ void* vectorGet(Vector *vec, size_t idx) {
   if (idx < vec->size) {
     return vec->items[idx];
   }
+  
+  fprintf(stderr, "%s: Element %d outside vector with size %d.", __func__, idx, vec->size);
   return NULL;
 }
 
 void* vectorBack(Vector *vec) {
   if (0 == vec->size) {
+    fprintf(stderr, "%s: Vector is empty.", __func__);
     return NULL;
   }
 
   return vec->items[vec->size - 1];
 }
 
-void vectorDelete(Vector *vec, size_t idx) {
+int vectorDelete(Vector *vec, size_t idx) {
   if (idx >= vec->size) {
-    return;
+    fprintf(stderr, "%s: Could not delete element %d.", __func__, idx);
+    return 1;
   }
 
   vec->items[idx] = NULL;
@@ -69,14 +96,19 @@ void vectorDelete(Vector *vec, size_t idx) {
   }
 
   vec->size--;
+
+  return 0;
 }
 
-void vectorPop(Vector *vec) {
+int vectorPop(Vector *vec) {
   if (vec->size == 0) {
-    return;
+    fprintf(stderr, "%s: Vector is empty.", __func__);
+    return 1;
   }
 
   vec->size--;
+
+  return 0;
 }
 
 void vectorFree(Vector *vec) {
