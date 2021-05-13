@@ -12,13 +12,21 @@ void generateTerranFleet(BattleField *battleField, const char *terranFleetStr) {
   for (int i = 0; terranFleetStr[i] != '\0'; i++) {
     Ship *newShip = (Ship *) malloc(sizeof(Ship));
 
+    if (newShip == NULL) {
+      fprintf(stderr, "%s: memory allocation failed.", __func__);
+      exit(EXIT_FAILURE);
+    }
+
     if (terranFleetStr[i] == 'v') {
       initializeViking(newShip, i);
     } else if (terranFleetStr[i] == 'b') {
       initializeBattleCruiser(newShip, i);
     }
 
-    vectorPush(&(battleField->terranFleet), newShip);
+    if ( vectorPush(&(battleField->terranFleet), newShip) ) {
+      fprintf(stderr, "%s: Failed to add new ship.", __func__);
+      exit(EXIT_FAILURE);
+    }
   }
 }
 
@@ -30,13 +38,21 @@ void generateProtossFleet(BattleField *battleField, const char *protossFleetStr)
   for (int i = 0; protossFleetStr[i] != '\0'; i++) {
     Ship *newShip = (Ship *) malloc(sizeof(Ship));
     
+    if (newShip == NULL) {
+      fprintf(stderr, "%s: memory allocation failed.", __func__);
+      exit(EXIT_FAILURE);
+    }
+    
     if (protossFleetStr[i] == 'p') {
       initializePhoenix(newShip, i);
     } else if (protossFleetStr[i] == 'c') {
       initializeCarrier(newShip, i);
     }
 
-    vectorPush(&(battleField->protossFleet), newShip);
+    if ( vectorPush(&(battleField->protossFleet), newShip) ) {
+      fprintf(stderr, "%s: Failed to add new ship.", __func__);
+      exit(EXIT_FAILURE);
+    }
   }
 }
 
@@ -63,11 +79,21 @@ bool processTerranTurn(BattleField *battleField) {
   Ship *attacker;
   Ship *enemy = (Ship*) vectorBack(protFleet);
 
+  if (enemy == NULL) {
+    fprintf(stderr, "%s: Enemy ship is missing.", __func__);
+    exit(EXIT_FAILURE);
+  }
+
   static int cannonProgress = 1; /* Used by BattleCruser's special ability */
 
   for (size_t i = 0; i < vectorGetSize(terFleet); i++) {
     attacker = (Ship *) vectorGet(terFleet, i);
 
+    if (attacker == NULL) {
+      fprintf(stderr, "%s: Attacking ship is missing.", __func__);
+      exit(EXIT_FAILURE);
+    }
+    
     if (attacker->type == VIKING) {
       vikingAttack(enemy);
       handleDestroyedShip(&enemy, protFleet, "Viking", attacker->id);
@@ -94,8 +120,18 @@ bool processProtossTurn(BattleField *battleField) {
   Ship *attacker;
   Ship *enemy = (Ship*) vectorBack(terFleet);
 
+  if (enemy == NULL) {
+    fprintf(stderr, "%s: Enemy ship is missing.", __func__);
+    exit(EXIT_FAILURE);
+  }
+
   for (size_t i = 0; i < vectorGetSize(protFleet); i++) {
     attacker = (Ship*) vectorGet(protFleet, i);
+
+    if (attacker == NULL) {
+      fprintf(stderr, "%s: Attacking ship is missing.", __func__);
+      exit(EXIT_FAILURE);
+    }
 
     if (attacker->type == PHOENIX) {
       phoenixAttack(enemy);
@@ -135,7 +171,12 @@ void handleDestroyedShip(Ship **enemy, Vector *fleet, char *attackerString, int 
     printf("%s with ID: %d killed enemy airship with ID: %d\n", attackerString, attackerID, (*enemy)->id);
     vectorPop(fleet);
     free(*enemy);
-    *enemy = (Ship *) vectorBack(fleet);
+    
+    if (!vectorIsEmpty(fleet)) {
+      *enemy = (Ship *) vectorBack(fleet);
+    } else {
+      *enemy = NULL;
+    }
   }
 }
 
