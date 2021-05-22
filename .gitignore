@@ -9,8 +9,8 @@ test.c
 00.c
 
 # Python
-__pycache__
-test.py
+*__pycache__*
+test_.py
 
 # Miscellaneous
 game
