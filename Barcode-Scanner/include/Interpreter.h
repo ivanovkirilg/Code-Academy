@@ -3,6 +3,6 @@
 
 #include <stdlib.h>
 
-char *interpretBinLightData(const char *binData, size_t sensorCount);
+char *interpretLightData(const char *lightData, size_t sensorCount);
 
 #endif /* INTERPRETER_H_ */

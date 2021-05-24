@@ -5,13 +5,10 @@
 
 int main(void) {
     size_t sensorCount;
-    float *rawLightData = readLightData(&sensorCount);
-    char *binLightData = binarizeLightData(sensorCount, rawLightData);
-    free(rawLightData);
+    char *lightData = readLightData(&sensorCount);
+    char *binaryData = interpretLightData(lightData, sensorCount);
 
-    printf("%s", interpretBinLightData(binLightData, sensorCount) ); /* mem leak */
-
-    free(binLightData);
+    free(binaryData);
 
     return 0;
 }

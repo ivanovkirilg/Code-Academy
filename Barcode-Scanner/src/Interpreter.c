@@ -6,21 +6,21 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-static bool writeMeaningfulBit(char *meaningfulBits, int *position, int *darkBits);
+static bool writeInterpretedBit(char *meaningfulBits, int *position, int *darkBits);
 
-char *interpretBinLightData(const char *binData, size_t sensorCount) {
-    char *meaningfulBits = (char *) malloc(sensorCount / 2);
-    memAllocationCheck(meaningfulBits, __func__);
+char *interpretLightData(const char *lightData, size_t sensorCount) {
+    char *interpreted = (char *) malloc(sensorCount / 2);
+    memAllocationCheck(interpreted, __func__);
 
     int dark = 0, errors = 0, position = 0;
 
     for (int i = 0; i < sensorCount; i++) {
-        if (binData[i] == '0') {
+        if (lightData[i] == '0') {
             dark++;
         }
 
-        else if (binData[i] == '1') {
-            bool end = writeMeaningfulBit(meaningfulBits, &position, &dark);
+        else if (lightData[i] == '1') {
+            bool end = writeInterpretedBit(interpreted, &position, &dark);
             
             if (end) {
                 if (position > CODE_LEN) {
@@ -35,21 +35,21 @@ char *interpretBinLightData(const char *binData, size_t sensorCount) {
         }
     }
 
-    meaningfulBits[position] = '\0';
+    interpreted[position] = '\0';
     
-    return meaningfulBits;
+    return interpreted;
 }
 
-static bool writeMeaningfulBit(char *meaningfulBits, int *position, int *darkBits) {
+static bool writeInterpretedBit(char *interpreted, int *position, int *darkBits) {
     if (*darkBits == 1) {
-        meaningfulBits[*position] = '0';
+        interpreted[*position] = '0';
         *darkBits = 0;
         (*position)++;
         return false;
     }
     
     else if (*darkBits == 2) {
-        meaningfulBits[*position] = '1';
+        interpreted[*position] = '1';
         *darkBits = 0;
         (*position)++;
         return false;

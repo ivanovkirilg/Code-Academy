@@ -3,7 +3,6 @@
 
 #include <stdlib.h>
 
-float *readLightData(size_t *sensorCount);
-char *binarizeLightData(size_t sensorCount, const float *data);
+char *readLightData(size_t *sensorCount);
 
 #endif /* LIGHT_DATA_READER_H_ */

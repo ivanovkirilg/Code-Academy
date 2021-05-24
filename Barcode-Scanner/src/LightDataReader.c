@@ -6,8 +6,9 @@
 #include <stdlib.h>
 
 static void resolveUncertain(int count, char *from, char value);
+static char *binarizeLightData(size_t sensorCount, const float *data);
 
-float *readLightData(size_t *sensorCount) {
+char *readLightData(size_t *sensorCount) {
     int scanReturn = scanf("%lu", sensorCount);
     inputCheck(scanReturn, 1, __func__);
 
@@ -19,7 +20,10 @@ float *readLightData(size_t *sensorCount) {
         inputCheck(scanReturn, 1, __func__);
     }
 
-    return data;
+    char *binData = binarizeLightData(*sensorCount, data);
+    free(data);
+
+    return binData;
 }
 
 char *binarizeLightData(size_t sensorCount, const float *data) {
@@ -52,7 +56,6 @@ char *binarizeLightData(size_t sensorCount, const float *data) {
     binData[sensorCount] = '\0';
 
     if (uncertainDataCount > 0) {
-        // fprintf(stderr, "Warning in %s: Not all data has been interpreted.\n", __func__);
         resolveUncertain(uncertainDataCount, &binData[sensorCount - 1], '1');
     }
 
