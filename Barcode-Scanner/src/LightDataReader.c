@@ -1,45 +1,33 @@
-#include "Data.h"
+#include "LightDataReader.h"
 #include "Defines.h"
+#include "ErrorChecks.h"
 
 #include <stdio.h>
-#include <errno.h>
-#include <string.h>
 #include <stdlib.h>
 
 static void resolveUncertain(int count, char *from, char value);
 
-float *readData(size_t *sensorCount) {
-    if (scanf("%lu", sensorCount) != 1) {
-        fprintf(stderr, "Error in %s: Invalid input in scanf()\n", __func__);
-        exit(EXIT_FAILURE);
-    }
+float *readLightData(size_t *sensorCount) {
+    int scanReturn = scanf("%lu", sensorCount);
+    inputCheck(scanReturn, 1, __func__);
 
     float *data = (float *) malloc(sizeof(float) * (*sensorCount));
-    
-    if (data == NULL) {
-        fprintf(stderr, "Error in %s: %s\n", __func__, strerror(errno));
-        exit(EXIT_FAILURE);
-    }
+    memAllocationCheck(data, __func__);
 
     for (int i = 0; i < *sensorCount; i++) {
-        if (scanf(" %f", data + i) != 1) {
-            fprintf(stderr, "Error in %s: Invalid input in scanf()\n", __func__);
-            exit(EXIT_FAILURE);
-        }
+        int scanReturn = scanf(" %f", data + i);
+        inputCheck(scanReturn, 1, __func__);
     }
 
     return data;
 }
 
-char *binarizeData(size_t sensorCount, const float *data) {
+char *binarizeLightData(size_t sensorCount, const float *data) {
     #define isWithinUpper(x) (x) > 1.0 - (MARGIN)
     #define isWithinLower(x) (x) < (MARGIN)
     
     char *binData = (char *) malloc(sensorCount + 1);
-    if (binData == NULL) {
-        fprintf(stderr, "Error in %s: %s\n", __func__, strerror(errno));
-        exit(EXIT_FAILURE);
-    }
+    memAllocationCheck(binData, __func__);
 
     int uncertainDataCount = 0;
     for (int i = 0; i < sensorCount; i++) {
@@ -57,14 +45,15 @@ char *binarizeData(size_t sensorCount, const float *data) {
         
         else {
             uncertainDataCount++;
-            binData[i] = '#';
+            binData[i] = ERROR_SYMBOL;
         }
     }
 
     binData[sensorCount] = '\0';
 
     if (uncertainDataCount > 0) {
-        fprintf(stderr, "Warning in %s: Not all data has been interpreted.", __func__);
+        // fprintf(stderr, "Warning in %s: Not all data has been interpreted.\n", __func__);
+        resolveUncertain(uncertainDataCount, &binData[sensorCount - 1], '1');
     }
 
     return binData;

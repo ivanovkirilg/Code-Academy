@@ -3,6 +3,10 @@
 
 #define MARGIN 0.3
 
+#define ERROR_SYMBOL '#'
+
+#define CODE_LEN 5
+
 #define ZERO        "00001"
 #define ONE         "10001"
 #define TWO         "01001"

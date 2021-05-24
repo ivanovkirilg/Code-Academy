@@ -1,15 +1,17 @@
-#include "Data.h"
+#include "LightDataReader.h"
+#include "Interpreter.h"
+
 #include <stdio.h>
 
 int main(void) {
     size_t sensorCount;
-    float *data = readData(&sensorCount);
-    char *binData = binarizeData(sensorCount, data);
-    free(data);
+    float *rawLightData = readLightData(&sensorCount);
+    char *binLightData = binarizeLightData(sensorCount, rawLightData);
+    free(rawLightData);
 
-    printf("%s\n", binData);
+    printf("%s", interpretBinLightData(binLightData, sensorCount) ); /* mem leak */
 
-    free(binData);
+    free(binLightData);
 
     return 0;
 }
