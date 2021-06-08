@@ -1,0 +1,40 @@
+//Пребройте последователностите в битовия запис на
+//числото.
+#include<stdio.h>
+
+int lastBitCheck(int number);
+
+int main() {
+    
+    int number = 336422564 , countSeq = 0, countNumberOfSeq = 0, curr;
+
+    
+
+    while (number != 0) {
+        
+        curr = lastBitCheck(number);
+        number = number >> 1;
+        
+        if ( ( curr == lastBitCheck(number) ) && (curr == 1) ) {
+            countSeq++;
+        }
+        else {
+            if(countSeq > 0) {
+                countNumberOfSeq++;
+                countSeq = 0;
+            }
+        }
+    }
+    
+    printf("%d\n", countNumberOfSeq);
+    return 0;
+}
+
+int lastBitCheck(int number) {
+    if(number % 2 == 0) {
+        return 0;
+    }
+    else {
+        return 1;
+    }
+}

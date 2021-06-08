@@ -1,0 +1,7 @@
+bin/bitwise 1 2
+bin/bitwise 2 1
+bin/bitwise 2 2
+bin/bitwise 137 79
+bin/bitwise -5 5
+bin/bitwise 0 0
+bin/bitwise 1 2 3 4 5

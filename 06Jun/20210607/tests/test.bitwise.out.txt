@@ -1,0 +1,7 @@
+0 3 3
+0 3 3
+2 2 0
+9 207 198
+1 -1 -2
+0 0 0
+Usage: bin/bitwise [number1] [number2]

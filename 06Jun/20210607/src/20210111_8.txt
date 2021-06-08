@@ -1,0 +1,17 @@
+//Намерете позицията на най-старшия бит, който е със
+//стойност 1 в дадено число.
+#include <stdio.h>
+
+int main()
+{
+
+    int number = 112, count = 0;
+    while (number != 1){
+
+        number = number >> 1;
+        count++;
+    }
+
+    printf("%d\n", count);
+    return 0;
+}

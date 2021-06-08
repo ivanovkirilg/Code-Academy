@@ -1,0 +1,5 @@
+bin/getbit 5 1
+bin/getbit 5 0
+bin/getbit 2 1
+bin/getbit -13 4
+bin/getbit

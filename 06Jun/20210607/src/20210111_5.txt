@@ -1,0 +1,22 @@
+//Създайте функция obarniBitNa. Тя получава
+//следните параметри - число и индекс. Като резултат
+//функцията обръща бита на съответната позиция в
+//числото (съответно от 0 на 1 или от 1 на 0).
+#include<stdio.h>
+
+int obarniBitna (int number, int index);
+
+int main() {
+    
+    printf("%d\n", obarniBitna(3, 2));
+ 
+    return 0;
+}
+
+int obarniBitna(int number, int index) {
+    int mask = 1;
+    mask = mask << index;
+
+    return number ^ mask;
+
+}
