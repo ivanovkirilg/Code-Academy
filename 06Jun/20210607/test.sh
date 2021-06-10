@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BINARIES=`ls bin`
+BIN_PATH="bin"
 
 if [[ $1 == -c ]]
 then
@@ -8,7 +8,9 @@ then
     exit 0
 fi
 
-for BIN in $BINARIES
+./compile.sh
+
+for BIN in `ls $BIN_PATH`
 do
     bash tests/test.$BIN.in.txt > test.results.txt
     if cmp -s "tests/test.$BIN.out.txt" "test.results.txt"
