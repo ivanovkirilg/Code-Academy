@@ -16,4 +16,11 @@ _by Kiril Ivanov and Nikolay Georgiev_
 #### Test files must follow the pattern:
 `test.BINARY_NAME.in.txt` has one command on each line 
 which runs BINARY from /bin/ with args. <br>
-`test.BINARY_NAME.out.txt` has expected output for each command.
+`test.BINARY_NAME.out.txt` has expected output for each command. <br>
+<br>
+
+### Task 11:
+
+Разбийте число като сума от степени на двойката. <br>
+Break up a number into powers of two.
+- _Implemented in_ `powers.c` <br>
