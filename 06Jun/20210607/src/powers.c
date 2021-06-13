@@ -16,13 +16,13 @@ int main(int argc, char *argv[])
     if (sscanf(argv[1], "%ld", &number) != 1) {
         printf("%s is not an integer.\n", argv[1]);
         printf(USAGE_STR, argv[0]);
-        return 1;
+        return 2;
     }
 
     if (number < 0) {
         printf("%ld is negative.\n", number);
         printf(USAGE_STR, argv[0]);
-        return 1;
+        return 3;
     }
     
     while (number != 0){

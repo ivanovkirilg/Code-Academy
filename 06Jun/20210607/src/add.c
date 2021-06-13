@@ -11,6 +11,7 @@ int main (int argc, char* argv[]) {
     }
     else {
         printf("Usage: %s [number1] [number2]\n", argv[0]);
+        return 1;
     }
 
     return 0;

@@ -1,8 +1,0 @@
-bin/add 1 2
-bin/add -2 2
-bin/add -2 -2
-bin/add 1.5 3.5
-bin/add 1.5 -3.5
-bin/add 2 0
-bin/add 0 0
-bin/add

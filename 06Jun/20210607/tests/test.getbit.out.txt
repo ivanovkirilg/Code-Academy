@@ -1,5 +1,0 @@
-0
-1
-1
-1
-Usage: bin/getbit [number] [bit index]
