@@ -10,9 +10,9 @@ OUTPUT=(
 "Usage: bin/rng [seed]"
 "a is not an integer.
 Usage: bin/rng [seed]"
-"262176"
-"6554368"
-"32367414400"
+"270369"
+"6759192"
+"33109209316"
 )
 
 EXIT=(
