@@ -24,7 +24,7 @@ Break up a number into powers of two.
 
 ### Task 17:
 
-Направете генератор на случайни числа последния алгоритъм (xorshift):
+Направете генератор на случайни числа последния алгоритъм (xorshift): <br>
 Make a random number generator using the following algorithm (xorshift):
 1. `A ^= A << 13;`
 2. `A ^= A >> 17;`
@@ -32,6 +32,6 @@ Make a random number generator using the following algorithm (xorshift):
 - _Implemented in_ `rng.c` <br>
 
 ### Task 4:
-Напишете финкцията `int our_strcmp(char *s, char *t)`, която сравнява низовете `s` и `t`.
+Напишете финкцията `int our_strcmp(char *s, char *t)`, която сравнява низовете `s` и `t`. <br>
 Write the function `int our_strcmp(char *s, char *t)` which compares the strings `s` and `t`.
 - _Implemented in_ `strcmp.c` <br>
