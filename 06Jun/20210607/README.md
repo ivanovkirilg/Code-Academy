@@ -31,3 +31,7 @@ Make a random number generator using the following algorithm (xorshift):
 3. `A ^= A << 5;` <br>
 - _Implemented in_ `rng.c` <br>
 
+### Task 4:
+Напишете финкцията `int our_strcmp(char *s, char *t)`, която сравнява низовете `s` и `t`.
+Write the function `int our_strcmp(char *s, char *t)` which compares the strings `s` and `t`.
+- _Implemented in_ `strcmp.c` <br>
