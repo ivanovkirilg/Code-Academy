@@ -32,6 +32,12 @@ Make a random number generator using the following algorithm (xorshift):
 - _Implemented in_ `rng.c` <br>
 
 ### Task 4:
+
 Напишете финкцията `int our_strcmp(char *s, char *t)`, която сравнява низовете `s` и `t`. <br>
 Write the function `int our_strcmp(char *s, char *t)` which compares the strings `s` and `t`.
 - _Implemented in_ `strcmp.c` <br>
+
+### Task 12:
+Напишете функция, която изчислява разстоянието между две точки в равнината. <br>
+Write a function which calculates the distance between two points in a plane.
+- _Implemented in_ `distance.c` <br>
